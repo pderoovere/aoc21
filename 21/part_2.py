@@ -1,4 +1,3 @@
-
 from pathlib import Path
 from collections import defaultdict
 from dataclasses import dataclass
@@ -32,7 +31,6 @@ class State:
             player_2_score = self.player_2_score + player_2_pos
             return State(self.player_1_pos, self.player_1_score, player_2_pos, player_2_score, 1)
 
-
 @dataclass
 class Outcomes:
     player_1_wins: int
@@ -41,18 +39,11 @@ class Outcomes:
     def __mul__(self, other):
         return Outcomes(self.player_1_wins * other, self.player_2_wins * other)
 
-    def __rmul__(self, other):
-        return self.__mul__(other)
-
-    def __add__(self,other):
+    def __add__(self, other):
         return Outcomes(self.player_1_wins + other.player_1_wins, self.player_2_wins + other.player_2_wins)
-
-    def __radd__(self, other):
-        return self.__add__(other)
 
 @lru_cache(100_000)
 def simulate(state):
-
     if state.player_1_score >= 21:
         return Outcomes(1, 0)
     elif state.player_2_score >= 21:
@@ -63,13 +54,11 @@ def simulate(state):
 
 # First fill up the cache, starting with almost-finished states
 for p1_pos in range(10, 0, -1):
-    print(p1_pos)
     for p2_pos in range(10, 0, -1):
         for p1_score in range(20, -1, -1):
             for p2_score in range(20, -1, -1):
                 simulate(State(p1_pos, p1_score, p2_pos, p2_score, 1))
                 simulate(State(p1_pos, p1_score, p2_pos, p2_score, 2))
-
 
 lines = Path('21/input.txt').read_text().strip('\n').split('\n')
 player_1 = int(lines[0].split(' ')[-1])

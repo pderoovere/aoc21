@@ -59,11 +59,10 @@ class Box:
         return result
 
 def combine(boxes, new_box):
-    new_boxes = []
+    remaining_boxes = []
     for box in boxes:
-        new_boxes += box.differences(new_box)
-    new_boxes.append(new_box)
-    return new_boxes
+        remaining_boxes += box.differences(new_box)
+    return remaining_boxes + [new_box]
 
 def parse(line):
     global limit_val

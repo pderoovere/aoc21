@@ -35,9 +35,6 @@ class Box:
     y: Range
     z: Range
 
-    def total_value(self):
-        return self.value * len(self.x) * len(self.y) * len(self.z)
-
     def has_overlap(self, other):
         return self.x.has_overlap(other.x) and self.y.has_overlap(other.y) and self.z.has_overlap(other.z)
 
@@ -55,6 +52,9 @@ class Box:
             result.append(Box(self.value, remaining_x, remaining_y, d_z))
         return result
 
+    def total_value(self):
+        return self.value * len(self.x) * len(self.y) * len(self.z)
+
 def combine(boxes, new_box):
     remaining_boxes = []
     for box in boxes:
@@ -68,8 +68,9 @@ def parse(line):
     limits = [int(n) for n in re.findall('[-]*[0-9]+', limits)]
     return Box(value, Range(limits[0], limits[1]), Range(limits[2], limits[3]), Range(limits[4], limits[5]))
 
-boxes = []
 lines = Path('22/input.txt').read_text().strip('\n').split('\n')
+
+boxes = []
 for i, line in enumerate(lines):
     box = parse(line)
     boxes = combine(boxes, box)

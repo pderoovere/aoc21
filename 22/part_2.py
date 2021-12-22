@@ -7,7 +7,7 @@ class Range:
     low: int
     high: int
 
-    def difference(self, other):
+    def differences(self, other):
         if self.high < other.low or self.low > other.high:
             return [self]
         result = []
@@ -44,28 +44,28 @@ class Box:
     def has_overlap(self, other):
         return self.x.has_overlap(other.x) and self.y.has_overlap(other.y) and self.z.has_overlap(other.z)
 
-    def difference(self, other):
+    def differences(self, other):
         if not self.has_overlap(other):
             return [self]
         result = []
-        for d_x in self.x.difference(other.x):
+        for d_x in self.x.differences(other.x):
             result.append(Box(self.value, d_x, self.y, self.z))
         remaining_x = self.x.intersection(other.x)
         if remaining_x is None:
             return result
-        for d_y in self.y.difference(other.y):
+        for d_y in self.y.differences(other.y):
             result.append(Box(self.value, remaining_x, d_y, self.z))
         remaining_y = self.y.intersection(other.y)
         if remaining_y is None:
             return result
-        for d_z in self.z.difference(other.z):
+        for d_z in self.z.differences(other.z):
             result.append(Box(self.value, remaining_x, remaining_y, d_z))
         return result
 
 def combine(boxes, new_box):
     new_boxes = []
     for box in boxes:
-        new_boxes += box.diff(new_box)
+        new_boxes += box.differences(new_box)
     new_boxes.append(new_box)
     return new_boxes
 

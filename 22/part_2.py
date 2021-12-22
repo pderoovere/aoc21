@@ -10,10 +10,7 @@ class Range:
     def intersection(self, other):
         low = max(self.low, other.low)
         high = min(self.high, other.high)
-        if low <= high:
-            return Range(low, high)
-        else:
-            return None
+        return Range(low, high) if low <= high else None
 
     def has_overlap(self, other):
         return self.intersection(other) is not None
@@ -71,10 +68,10 @@ def parse(line):
     limits = [int(n) for n in re.findall('[-]*[0-9]+', limits)]
     return Box(value, Range(limits[0], limits[1]), Range(limits[2], limits[3]), Range(limits[4], limits[5]))
 
-result = []
+boxes = []
 lines = Path('22/input.txt').read_text().strip('\n').split('\n')
 for i, line in enumerate(lines):
     box = parse(line)
-    result = combine(result, box)
+    boxes = combine(boxes, box)
 
-print('Answer: ', sum([box.total_value() for box in result]))
+print('Answer: ', sum([box.total_value() for box in boxes]))

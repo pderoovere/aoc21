@@ -25,6 +25,9 @@ class Range:
         else:
             return None
 
+    def overlap(self, other):
+        return not (self.high < other.low or self.low > other.high)
+
     def indices(self):
         return set(range(self.low, self.high + 1))
 
@@ -41,7 +44,12 @@ class Box:
     def total_value(self):
         return self.value * len(self.x) * len(self.y) * len(self.z)
 
+    def overlap(self, other):
+        return self.x.overlap(other.x) and self.y.overlap(other.y) and self.z.overlap(other.z)
+
     def diff(self, other):
+        if not self.overlap(other):
+            return [self]
         result = []
         for d_x in self.x.diff(other.x):
             result.append(Box(self.value, d_x, self.y, self.z))

@@ -62,7 +62,6 @@ def combine(cuboids, new_cuboid):
     return remaining_cuboids + [new_cuboid]
 
 def parse(line):
-    global limit_val
     value, limits = line.split(' ')
     value = 1 if value == 'on' else 0
     limits = [int(n) for n in re.findall('[-]*[0-9]+', limits)]

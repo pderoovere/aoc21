@@ -7,16 +7,6 @@ class Range:
     low: int
     high: int
 
-    def differences(self, other):
-        if self.high < other.low or self.low > other.high:
-            return [self]
-        result = []
-        if self.low < other.low:
-            result.append(Range(self.low, other.low - 1))
-        if self.high > other.high:
-            result.append(Range(other.high + 1, self.high))
-        return result
-
     def intersection(self, other):
         low = max(self.low, other.low)
         high = min(self.high, other.high)
@@ -26,7 +16,17 @@ class Range:
             return None
 
     def has_overlap(self, other):
-        return not (self.high < other.low or self.low > other.high)
+        return self.intersection(other) is not None
+
+    def differences(self, other):
+        if not self.has_overlap(other):
+            return [self]
+        result = []
+        if self.low < other.low:
+            result.append(Range(self.low, other.low - 1))
+        if self.high > other.high:
+            result.append(Range(other.high + 1, self.high))
+        return result
 
     def __len__(self):
         return self.high + 1 - self.low
@@ -51,13 +51,9 @@ class Box:
         for d_x in self.x.differences(other.x):
             result.append(Box(self.value, d_x, self.y, self.z))
         remaining_x = self.x.intersection(other.x)
-        if remaining_x is None:
-            return result
         for d_y in self.y.differences(other.y):
             result.append(Box(self.value, remaining_x, d_y, self.z))
         remaining_y = self.y.intersection(other.y)
-        if remaining_y is None:
-            return result
         for d_z in self.z.differences(other.z):
             result.append(Box(self.value, remaining_x, remaining_y, d_z))
         return result
@@ -81,6 +77,5 @@ lines = Path('22/input.txt').read_text().strip('\n').split('\n')
 for i, line in enumerate(lines):
     box = parse(line)
     result = combine(result, box)
-    print('Boxes after', i, len(result))
 
 print('Answer: ', sum([box.total_value() for box in result]))
